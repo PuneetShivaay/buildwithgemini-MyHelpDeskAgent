@@ -1,95 +1,90 @@
-# MyHelpDeskAgent
+# 🤖 MyHelpDeskAgent
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
 [![Google ADK 1.1.0](https://img.shields.io/badge/Google%20ADK-1.1.0-4285F4.svg)](https://google.github.io/agent-development-kit/)
-[![Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-Deployed-34A853.svg)](https://frontend-246073422784.us-east1.run.app)
+[![Cloud Run Deployed](https://img.shields.io/badge/Google%20Cloud%20Run-Deployed-34A853.svg)](https://frontend-246073422784.us-east1.run.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI Pipeline](https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/actions)
 
-> 🌐 **Live Deployed Web Application**: [https://frontend-246073422784.us-east1.run.app](https://frontend-246073422784.us-east1.run.app)
+> 🌐 **Live Production Web Application**: [https://frontend-246073422784.us-east1.run.app](https://frontend-246073422784.us-east1.run.app)
 
-**MyHelpDeskAgent** is an AI-powered IT Helpdesk & Support assistant built with Google's **Agent Development Kit (ADK v1.1.0)**. It assists employees with IT support ticketing, hardware inventory lookup, network diagnostics, multimodal setup guide generation (diagrams & videos), and SLA calculation metrics—all presented through rich **A2UI card surfaces** and backed by cross-session **Vertex AI Memory Bank**.
+**MyHelpDeskAgent** is an enterprise-grade AI IT Helpdesk & Support assistant built with Google's **Agent Development Kit (ADK v1.1.0)**. It automates IT support ticketing, hardware inventory lookups, network diagnostics, multimodal setup guide generation (diagrams & videos), and SLA calculation metrics—all presented through rich **A2UI card surfaces** and backed by cross-session **Vertex AI Memory Bank**.
 
 ![MyHelpDeskAgent Interactive Demo Walkthrough](demo/demo_walkthrough.gif)
 
 ---
 
+## 📌 Table of Contents
+- [✨ Key Architecture & Features](#-key-architecture--features)
+- [📚 Technical Documentation Suite](#-technical-documentation-suite)
+- [📁 Repository Structure](#-repository-structure)
+- [💻 Step-by-Step Local Setup & Execution](#-step-by-step-local-setup--execution)
+- [🚀 Cloud Deployment Guide](#-cloud-deployment-guide)
+- [🔐 Security & IAM Policies](#-security--iam-policies)
+- [🤝 Contributing & License](#-contributing--license)
+
+---
+
+## ✨ Key Architecture & Features
+
+All features listed below are directly implemented, containerized, and verified in production (`app/agent.py`, `app/a2ui_utils.py`, `frontend/main.py`, `agents-cli-manifest.yaml`).
+
+| Feature | Tech Component | Functional Capability |
+| :--- | :--- | :--- |
+| 🧠 **Cross-Session Memory** | `VertexAiMemoryBankService` | Automatically extracts, retrieves, and persists user preferences, hardware specs, and support notes across separate chat sessions (`us-east1`). |
+| 📊 **Firestore Inventory & Tickets** | `google-cloud-firestore` | Real-time CRUD queries on Firestore `hardware` (laptops, serials, RAM/CPU) and `tickets` (priority, status, ticket ID `TCK-xxxx`). |
+| 🖼️ **Multimodal Generation** | Google GenAI & Omni Model | Generates technical setup diagrams (`gemini-3.1-flash-lite-image`) and hardware video guides (`gemini-omni-flash-preview` in `global`). |
+| ☁️ **GCS Public Asset Storage** | `google-cloud-storage` | Automated media byte uploads to public Google Cloud Storage returning public HTTPS object URLs (`https://storage.googleapis.com/...`). |
+| 🎨 **Native A2UI Card Surfaces** | `a2ui_callback` & Client Parser | Intercepts agent tool responses and formats them into rich interactive A2UI cards (tables, status badges, device specs). |
+| ⚡ **Sandbox SLA & Diagnostics** | `AgentEngineSandboxCodeExecutor` | Executes Python sandbox math for IP subnetting and automated SLA resolution time metrics. |
+
+---
+
 ## 📚 Technical Documentation Suite
 
-| Document | Focus & Description |
-| :--- | :--- |
-| 🏗️ **[Architecture Guide](doc/architecture.md)** | System overview, GCP service integrations, A2A protocol flow, and security boundaries. |
-| 🎨 **[Design Patterns](doc/design_patterns.md)** | ReAct loop, Proxy/Gateway, Callback interceptors, Factory/Schema Manager, and Dual Storage patterns. |
-| 📂 **[Code Structure & DB Schemas](doc/code_structure.md)** | Module layout, complete tool reference matrix, and Firestore collection schemas (`tickets`, `hardware`). |
-| 🔄 **[Data Flow Sequences](doc/data_flow.md)** | End-to-end user interaction sequence diagrams, multimodal pipelines, and Memory Bank persistence. |
+Our repository includes a dedicated [`doc/`](doc/) engineering suite designed for developers, solution architects, and security reviewers:
 
----
-
-## 🛠️ Implemented Capabilities & Architecture
-
-All features listed below are directly implemented and verified in `app/agent.py`, `app/a2ui_utils.py`, and `agents-cli-manifest.yaml`.
-
-### 🧠 Cross-Session Long-Term Memory
-- **Vertex AI Memory Bank**: Integrated using `VertexAiMemoryBankService` (Location: `us-east1`).
-- **Memory Retrieval**: Uses `PreloadMemoryTool` to load past user preferences, dietary notes, or hardware choices into model context.
-- **Memory Extraction Callback**: Automatically extracts and persists user preferences after each turn via `generate_memories_callback`.
-
-### 📊 Database & Inventory (Google Cloud Firestore)
-- **Hardware Inventory Lookup** (`get_hardware_info`): Queries Firestore `hardware` collection for assigned laptops, serial numbers, and device specifications by Asset ID (`HW-xxxx`) or employee name.
-- **Support Ticket Creation** (`create_ticket`): Generates and stores new IT support tickets in the Firestore `tickets` collection with category, priority, and ticket ID (`TCK-xxxx`).
-- **Ticket Status & Details** (`get_ticket_status`): Fetches complete ticket resolution status and details by ticket ID.
-- **Employee Ticket History** (`list_user_tickets`): Streams all open and past support requests submitted by a specific user.
-- **Ticket Updates** (`update_ticket_status`): Modifies ticket status (`Open`, `In Progress`, `Resolved`, `Closed`) and appends resolution notes.
-
-### 🖼️ Multimodal Visual & Video Generation
-- **Technical Setup Diagrams** (`generate_setup_guide_image`): Uses Google Gen AI (`gemini-3.1-flash-lite-image`) to create technical troubleshooting diagrams.
-- **Hardware Demonstration Videos** (`generate_hardware_video`): Uses Google's Omni model (`gemini-omni-flash-preview` in `global` region) to produce short video demonstrations.
-- **Cloud Media Storage**: Uploads generated images and video bytes directly to a public **Google Cloud Storage** bucket and returns public HTTPS URLs (`https://storage.googleapis.com/...`).
-- **Playground Artifact Integration**: Uses `tool_context.save_artifact` to render generated media within the ADK Playground Artifacts panel.
-
-### 🌐 Diagnostics & Code Sandbox Execution
-- **IP Network Geolocation** (`lookup_ip_address`): Performs network diagnostics (ISP, organization, location, ASN) for troubleshooting IP connectivity issues.
-- **Python Sandbox Code Execution**: Uses `AgentEngineSandboxCodeExecutor` (`calculate`) to evaluate SLA metrics and hardware depreciation equations in a secure sandbox environment.
-
-### 🎨 Rich A2UI Surface Rendering
-- **A2UI Catalog Integration**: Built with `A2uiSchemaManager` (v0.8) and `a2ui_callback`.
-- **Supported Surface Components**: Formats agent outputs into flat UI cards using `Card`, `Column`, `Row`, `Text`, and `Image` components.
-
----
-
-## 📋 Status of Planned Features
-
-| Feature | Status | Notes |
-| :--- | :---: | :--- |
-| **Firestore Ticket & Hardware Management** | ✅ Implemented | Live CRUD operations on Firestore `tickets` and `hardware` collections |
-| **Vertex AI Memory Bank** | ✅ Implemented | Active cross-session memory extraction & preloading |
-| **GCS Asset Hosting** | ✅ Implemented | Public GCS uploads for generated images and videos |
-| **Imagen & Omni Video Generation** | ✅ Implemented | Live `gemini-3.1-flash-lite-image` and `gemini-omni-flash-preview` tools |
-| **Custom FastAPI Proxy & A2UI Frontend** | ✅ Implemented | Browser -> FastAPI proxy -> Agent via A2A protocol |
-| **External ITSM Sync (Jira / ServiceNow)** | ⏳ *Planned, not implemented* | Out of scope for current agent build |
-| **Automated Email Notifications** | ⏳ *Planned, not implemented* | Out of scope for current agent build |
+| Document | Focus & Target Audience | Description |
+| :--- | :--- | :--- |
+| 🏗️ **[Architecture Guide](doc/architecture.md)** | Architects & DevOps | System topology, GCP service interactions, A2A protocol flow, and security perimeters. |
+| 🎨 **[Design Patterns](doc/design_patterns.md)** | Senior Software Engineers | ReAct reasoning loop, Proxy/Gateway pattern, Interceptor callbacks, and Dual Storage. |
+| 📂 **[Code Structure & DB Schemas](doc/code_structure.md)** | Developers | Codebase layout, complete tool reference matrix, and Firestore collection data models. |
+| 🔄 **[Data Flow Sequences](doc/data_flow.md)** | Solution Engineers | End-to-end user interaction sequence diagrams, multimodal pipelines, and Memory Bank flow. |
+| 🚀 **[Production Deployment Guide](doc/deployment_guide.md)** | Cloud Engineers | Step-by-step Vertex AI Reasoning Engine & Cloud Run proxy deployment guide with IAM roles. |
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-it-helpdesk-agent/
+buildwithgemini-MyHelpDeskAgent/
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI workflow (lint & syntax compile)
 ├── app/
-│   ├── agent.py               # Core ADK agent, tools, Firestore DB, and Memory Bank wiring
-│   ├── a2ui_utils.py          # A2UI response formatting callback
-│   └── fast_api_app.py        # ADK FastAPI backend server
+│   ├── agent.py               # ADK agent, tools, Firestore DB, and Memory Bank wiring
+│   ├── a2ui_utils.py          # A2UI response formatting interceptor callback
+│   └── fast_api_app.py        # ADK FastAPI backend application
 ├── frontend/
 │   ├── main.py                # FastAPI proxy server (A2A protocol bridge)
+│   ├── Dockerfile             # Production container definition for Cloud Run
 │   └── static/
-│       └── index.html         # Custom frontend chat interface with A2UI renderer
-├── doc/                        # Detailed Technical & Architecture Docs
-│   ├── architecture.md         # System architecture & GCP integration
-│   ├── design_patterns.md      # Software & AI design patterns
-│   ├── code_structure.md       # Directory layout, tools & DB schema
-│   └── data_flow.md            # Sequence diagrams & end-to-end data flows
-├── agents-cli-manifest.yaml   # Manifest configuration (A2A mode, region, agent directory)
-├── pyproject.toml             # Python dependencies and uv project settings
-└── deployment_metadata.json   # Deployed Agent Runtime resource metadata
+│       └── index.html         # Multi-tab web UI (Home Overview, Live Agent Chat, Docs)
+├── doc/                       # Enterprise Technical & Architecture Guides
+│   ├── architecture.md        # System architecture & GCP integration
+│   ├── design_patterns.md     # Software & AI agent design patterns
+│   ├── code_structure.md      # Directory layout, tools & DB schemas
+│   ├── data_flow.md           # Sequence diagrams & end-to-end data flows
+│   └── deployment_guide.md    # Production GCP deployment & IAM role guide
+├── demo/                      # Demonstration Media Assets & Walkthrough GIF
+│   ├── demo_walkthrough.gif   # Looping interactive demo walkthrough
+│   └── *.png                  # High-resolution UI screenshots
+├── agents-cli-manifest.yaml  # Agent Runtime deployment manifest (A2A mode)
+├── requirements.txt           # Unified project dependency file
+├── CONTRIBUTING.md            # Open-source contribution guidelines & standards
+├── SECURITY.md                # Security policy & vulnerability disclosure procedures
+├── CHANGELOG.md               # Version 1.1.0 release notes
+└── LICENSE                    # Official MIT License
 ```
 
 ---
@@ -173,21 +168,40 @@ Open **`http://localhost:8080`** in your browser to experience the **Home Overvi
 
 ---
 
-## 🚀 Cloud Deployment
+## 🚀 Cloud Deployment Guide
 
 To deploy the agent backend to **Vertex AI Agent Runtime**:
 ```bash
-gcloud config set project <PROJECT_ID>
+gcloud config set project <YOUR_GCP_PROJECT_ID>
 agents-cli deploy
 ```
 
-To deploy the custom frontend proxy to **Google Cloud Run**:
+To deploy the frontend web application to **Google Cloud Run**:
 ```bash
 cd frontend
 gcloud run deploy frontend \
   --source . \
   --region us-east1 \
-  --project <PROJECT_ID> \
+  --project <YOUR_GCP_PROJECT_ID> \
   --allow-unauthenticated \
-  --set-env-vars AGENT_ENGINE_RESOURCE_NAME="<REMOTE_RESOURCE_ID>",AGENT_DIRECTORY="app"
+  --clear-base-image \
+  --set-env-vars AGENT_ENGINE_RESOURCE_NAME="projects/<PROJECT_NUMBER>/locations/us-east1/reasoningEngines/<ENGINE_ID>",AGENT_DIRECTORY="app"
 ```
+
+For complete IAM role setups, Cloud Run configurations, and environment variable references, refer to the [Production Deployment Guide](doc/deployment_guide.md).
+
+---
+
+## 🔐 Security & IAM Policies
+
+Please review our [SECURITY.md](SECURITY.md) for vulnerability reporting procedures and IAM role restrictions.
+- Never commit private GCP service account keys or environment credentials to version control.
+- Enforce least-privilege IAM roles (`roles/aiplatform.user`, `roles/datastore.user`, `roles/storage.objectViewer`).
+
+---
+
+## 🤝 Contributing & License
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for coding standards, type checking requirements, and pull request procedures.
+
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
