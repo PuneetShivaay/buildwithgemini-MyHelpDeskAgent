@@ -62,6 +62,11 @@ it-helpdesk-agent/
 │   ├── main.py                # FastAPI proxy server (A2A protocol bridge)
 │   └── static/
 │       └── index.html         # Custom frontend chat interface with A2UI renderer
+├── doc/                        # Detailed Technical & Architecture Docs
+│   ├── architecture.md         # System architecture & GCP integration
+│   ├── design_patterns.md      # Software & AI design patterns
+│   ├── code_structure.md       # Directory layout, tools & DB schema
+│   └── data_flow.md            # Sequence diagrams & end-to-end data flows
 ├── agents-cli-manifest.yaml   # Manifest configuration (A2A mode, region, agent directory)
 ├── pyproject.toml             # Python dependencies and uv project settings
 └── deployment_metadata.json   # Deployed Agent Runtime resource metadata
