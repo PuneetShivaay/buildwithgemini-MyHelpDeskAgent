@@ -33,7 +33,6 @@ import httpx
 from a2a.client import ClientConfig, ClientFactory
 from a2a.types import (
     AgentCard,
-    FilePart,
     Message,
     Part,
     Role,
@@ -45,14 +44,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-RESOURCE = os.environ["AGENT_ENGINE_RESOURCE_NAME"]
-# The agent's app directory (matches agent_directory in agents-cli-manifest.yaml).
+RESOURCE = os.environ.get("AGENT_ENGINE_RESOURCE_NAME", "")
 AGENT_DIRECTORY = os.environ.get("AGENT_DIRECTORY", "app")
-# Location is embedded in the resource name: projects/<p>/locations/<loc>/reasoningEngines/<id>.
-LOCATION = RESOURCE.split("/locations/")[1].split("/")[0]
+LOCATION = RESOURCE.split("/locations/")[1].split("/")[0] if "/locations/" in RESOURCE else "us-east1"
 
-# A2A endpoint for an Agent Runtime deployment, via the Agent Engine HTTP
-# passthrough. The card lives at the well-known path under this base.
 A2A_BASE = (
     f"https://{LOCATION}-aiplatform.googleapis.com/reasoningEngines/v1/"
     f"{RESOURCE}/api/a2a/{AGENT_DIRECTORY}"
@@ -62,13 +57,14 @@ A2A_CARD_URL = f"{A2A_BASE}/.well-known/agent-card.json"
 # The agent tags its A2UI data parts with this mime type.
 _A2UI_MIME = "application/json+a2ui"
 
-# One set of ADC credentials, refreshed per request (access tokens expire ~1h).
-_creds, _ = google.auth.default(
-    scopes=["https://www.googleapis.com/auth/cloud-platform"]
-)
-
+_creds = None
 
 def _auth_headers() -> dict[str, str]:
+    global _creds
+    if _creds is None:
+        _creds, _ = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
     _creds.refresh(google.auth.transport.requests.Request())
     return {
         "Authorization": f"Bearer {_creds.token}",
@@ -130,7 +126,7 @@ def _extract_parts(parts: list) -> list[dict]:
             mime = meta.get("mimeType") if isinstance(meta, dict) else None
             if mime == _A2UI_MIME:
                 out.append({"kind": "a2ui", "data": root.data})
-        elif isinstance(root, FilePart):
+        elif type(root).__name__ in ("FilePart", "FileWithUri", "FileWithBytes") or hasattr(root, "file"):
             uri = getattr(getattr(root, "file", None), "uri", None)
             if uri:
                 out.append({"kind": "text", "text": uri})
