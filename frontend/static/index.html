@@ -3,49 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyHelpDeskAgent</title>
-<!-- Google Fonts: Inter & Material Symbols Outlined -->
+<title>MyHelpDeskAgent - AI IT Helpdesk & Support Assistant</title>
+<!-- Google Fonts & Material Symbols -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined" rel="stylesheet">
 <style>
   :root {
     --accent: #4f46e5;
     --accent-hover: #4338ca;
     --accent-light: rgba(79, 70, 229, 0.08);
-    --bg: #f1f5f9;
+    --bg: #f8fafc;
     --card-bg: #ffffff;
     --border: #e2e8f0;
-    --header-bg: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --header-bg: linear-gradient(135deg, #312e81 0%, #4338ca 50%, #6d28d9 100%);
     --text-main: #0f172a;
     --text-muted: #64748b;
-    --bubble-agent: #f8fafc;
+    --bubble-agent: #f1f5f9;
     --bubble-text: #1e293b;
-    --input-bg: #f8fafc;
+    --input-bg: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
   }
 
   [data-theme="dark"] {
     --bg: #0f172a;
     --card-bg: #1e293b;
     --border: #334155;
-    --header-bg: linear-gradient(135deg, #312e81 0%, #581c87 100%);
+    --header-bg: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --bubble-agent: #334155;
     --bubble-text: #f1f5f9;
     --input-bg: #0f172a;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5);
   }
 
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
     background: var(--bg);
     display: flex;
     flex-direction: column;
     height: 100vh;
     color: var(--text-main);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: hidden;
   }
 
   /* Custom Scrollbar */
@@ -54,392 +61,821 @@
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+  /* Header & Navigation Bar */
   header {
     background: var(--header-bg);
     color: #fff;
-    padding: 0.9rem 1.6rem;
-    font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: -0.01em;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 0.8rem;
   }
   .header-brand {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
   }
-  .header-brand::before {
-    content: '';
-    display: inline-block;
+  .status-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 8px #22c55e;
+    box-shadow: 0 0 10px #22c55e;
   }
+  .brand-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.25rem;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+  }
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+  }
+  .nav-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .nav-btn.active {
+    background: #ffffff;
+    color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
   }
   .header-btn {
     font-size: 0.8rem;
     font-weight: 600;
-    padding: 0.35rem 0.75rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.15);
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(4px);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    text-decoration: none;
   }
   .header-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.28);
     transform: translateY(-1px);
   }
 
-  .main-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-width: 900px;
-    width: 100%;
-    margin: 1rem auto;
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-    overflow: hidden;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-  }
-
-  #log {
+  /* View Panels */
+  .view-panel {
+    display: none;
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem;
+    width: 100%;
+  }
+  .view-panel.active {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    scroll-behavior: smooth;
   }
 
-  /* --- Welcome Hero & Empty State --- */
-  .welcome-hero {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.04) 0%, rgba(124, 58, 237, 0.04) 100%);
+  /* --------------------------------------------------------------------------
+   * TAB 1: LANDING / HOME OVERVIEW PAGE
+   * -------------------------------------------------------------------------- */
+  #view-home {
+    padding: 2.5rem 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 3rem;
+  }
+
+  .hero-section {
     text-align: center;
-    margin-bottom: 0.5rem;
-    animation: fadeInMsg 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 2rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
   }
-  .welcome-hero h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.3rem;
-    color: var(--text-main);
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed, #2563eb);
   }
-  .welcome-hero p {
-    margin: 0 0 1rem 0;
-    font-size: 0.9rem;
+  .hero-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #4f46e5;
+    background: var(--accent-light);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    letter-spacing: 0.02em;
+  }
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+    letter-spacing: -0.03em;
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-desc {
+    font-size: 1.05rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    max-width: 780px;
+    line-height: 1.6;
+    margin: 0;
   }
-  .features-grid {
+  .badge-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem;
+    margin-top: 0.5rem;
   }
-  .feature-badge {
-    font-size: 0.78rem;
-    font-weight: 500;
-    padding: 0.35rem 0.7rem;
-    border-radius: 20px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
-
-  /* --- Dialogue Layout & Message Bubbles --- */
-  .msg {
-    display: flex;
-    flex-direction: column;
-    animation: fadeInMsg 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    max-width: 88%;
-  }
-  @keyframes fadeInMsg {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg.user {
-    align-self: flex-end;
-    align-items: flex-end;
-  }
-  .msg.agent {
-    align-self: flex-start;
-    align-items: flex-start;
-  }
-
-  .msg-author {
+  .tech-pill {
     font-size: 0.78rem;
     font-weight: 600;
+    background: var(--bg);
+    color: var(--text-main);
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .hero-cta-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .cta-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.75rem 1.6rem;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    transition: all 0.2s ease;
+  }
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+  }
+  .cta-secondary {
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.75rem 1.6rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .cta-secondary:hover {
+    background: var(--border);
+    transform: translateY(-2px);
+  }
+
+  /* Feature Grid */
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
+  }
+  .icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  .icon-wrapper.memory { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
+  .icon-wrapper.database { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+  .icon-wrapper.media { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+  .icon-wrapper.ui { background: linear-gradient(135deg, #10b981, #059669); }
+  .icon-wrapper.diagnostics { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+  .feature-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .feature-card p {
+    margin: 0;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    margin-bottom: 0.35rem;
+    line-height: 1.5;
+  }
+
+  /* Architecture Flow Diagram */
+  .arch-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .arch-step {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 180px;
+    position: relative;
+  }
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .arch-step strong { font-size: 0.95rem; font-weight: 700; }
+  .arch-step span { font-size: 0.8rem; color: var(--text-muted); }
+  .arch-arrow {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* Demo Media Showcase */
+  .demo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .demo-gif {
+    max-width: 100%;
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* --------------------------------------------------------------------------
+   * TAB 2: LIVE CHAT AGENT INTERFACE
+   * -------------------------------------------------------------------------- */
+  #view-chat {
+    max-width: 960px;
+    margin: 0 auto;
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .chat-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  /* Welcome Hero Card inside Chat */
+  .welcome-hero {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 0.5rem;
+  }
+  .welcome-hero h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .welcome-hero p {
+    margin: 0 0 1.2rem 0;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+  .sample-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .prompt-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.35rem;
   }
-  .msg.user .msg-author { justify-content: flex-end; }
-
-  .bubble {
-    padding: 0.85rem 1.15rem;
-    border-radius: 16px;
-    background: var(--bubble-agent);
-    border: 1px solid var(--border);
-    text-align: left;
-    white-space: pre-wrap;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: var(--bubble-text);
-    position: relative;
+  .prompt-chip:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+    transform: translateY(-1px);
   }
-  .msg.agent .bubble { border-top-left-radius: 4px; }
+
+  /* Chat Bubbles */
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    gap: 0.25rem;
+  }
+  .msg.user { align-self: flex-end; }
+  .msg.agent { align-self: flex-start; }
+  .msg-author {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-left: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .bubble {
+    padding: 0.85rem 1.1rem;
+    border-radius: 18px;
+    font-size: 0.93rem;
+    line-height: 1.55;
+    word-break: break-word;
+    box-shadow: var(--shadow-sm);
+  }
   .msg.user .bubble {
     background: var(--accent);
-    color: #ffffff;
-    border: none;
-    border-top-right-radius: 4px;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.22);
+    color: #fff;
+    border-bottom-right-radius: 4px;
   }
-
-  /* When reply is an A2UI Card surface */
-  .bubble.rich {
-    background: transparent;
-    border: none;
-    padding: 0;
-    max-width: 100%;
-    white-space: normal;
-    box-shadow: none;
+  .msg.agent .bubble {
+    background: var(--bubble-agent);
+    color: var(--bubble-text);
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--border);
   }
+  .bubble.rich { background: var(--card-bg); padding: 0.5rem; }
 
-  /* Quick Action Bar for Agent Messages */
+  /* Message Quick Action Bar */
   .msg-actions {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.35rem;
-    opacity: 0.85;
-    transition: opacity 0.15s ease;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
   }
   .action-btn {
     background: transparent;
-    border: none;
+    border: 1px solid var(--border);
     color: var(--text-muted);
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.2rem 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
     border-radius: 6px;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.2rem;
-    transition: all 0.12s ease;
+    transition: all 0.15s ease;
   }
   .action-btn:hover {
-    background: var(--accent-light);
-    color: var(--accent);
+    background: var(--bg);
+    color: var(--text-main);
   }
   .action-btn.active {
+    background: var(--accent-light);
     color: var(--accent);
-    font-weight: 700;
+    border-color: var(--accent);
+  }
+
+  /* Input Form */
+  .chat-form {
+    padding: 0.8rem 1rem 1rem 1rem;
+    display: flex;
+    gap: 0.6rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-md);
+  }
+  .chat-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    outline: none;
+    resize: none;
+    max-height: 120px;
+  }
+  .send-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .send-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.05);
   }
 
   /* Typing Loader */
   .typing-loader {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 0.6rem 0.9rem;
+    gap: 0.3rem;
+    padding: 0.4rem 0.6rem;
   }
   .typing-loader span {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 1.2s infinite ease-in-out;
+    background: var(--text-muted);
+    animation: bounce 1.2s infinite ease-in-out;
   }
   .typing-loader span:nth-child(2) { animation-delay: 0.2s; }
   .typing-loader span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse {
-    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1.1); }
-  }
+  @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
 
-  /* Example Prompt Chips */
-  .prompts-container {
-    display: flex;
-    gap: 0.6rem;
-    padding: 0.6rem 1.2rem;
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-    overflow-x: auto;
-  }
-  .prompt-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.85rem;
-    border-radius: 20px;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--text-main);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    user-select: none;
-  }
-  .prompt-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--accent-light);
-    transform: translateY(-1px);
-  }
-
-  /* Form & Input controls */
-  form {
-    display: flex;
-    gap: 0.6rem;
-    padding: 1rem 1.2rem;
-    background: var(--card-bg);
-    border-top: 1px solid var(--border);
-    align-items: flex-end;
-  }
-  textarea {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    background: var(--input-bg);
-    color: var(--text-main);
-    resize: none;
-    max-height: 120px;
-    line-height: 1.4;
-  }
-  textarea:focus {
-    background: var(--card-bg);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-  }
-  button.submit-btn {
-    padding: 0.75rem 1.4rem;
-    border: none;
-    border-radius: 12px;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background-color 0.15s ease, transform 0.1s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    height: 44px;
-  }
-  button.submit-btn:hover { background: var(--accent-hover); }
-  button.submit-btn:active { transform: scale(0.98); }
-
-  /* --- A2UI component styles --- */
+  /* --------------------------------------------------------------------------
+   * A2UI Mini Renderer Components
+   * -------------------------------------------------------------------------- */
   .a2card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.25rem;
     background: var(--card-bg);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
-    max-width: 100%;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
-  .a2card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  }
-  .a2card + .a2card, .a2col > .a2card { margin-top: 0.6rem; }
   .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
-  .a2row { display: flex; flex-direction: row; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .a2row { display: flex; flex-direction: row; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
   .a2row.between { justify-content: space-between; }
-  .a2text { margin: 0; line-height: 1.5; color: var(--text-main); }
-  .a2text.a2-h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; }
-  .a2text.a2-h2 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em; }
-  .a2text.a2-h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-main); }
-  .a2text.a2-h4 { font-size: 0.95rem; font-weight: 600; color: var(--text-muted); }
-  .a2text.a2-caption { font-size: 0.85rem; color: var(--text-muted); }
-  .a2divider { border: none; border-top: 1px solid var(--border); margin: 0.5rem 0; width: 100%; }
-  .a2img { max-width: 100%; border-radius: 12px; display: block; border: 1px solid var(--border); }
-  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 1.25rem; line-height: 1; vertical-align: middle; color: var(--accent); }
+  .a2text { font-size: 0.9rem; line-height: 1.4; color: var(--text-main); }
+  .a2-h1, .a2-h2, .a2-h3 { font-weight: 800; color: var(--text-main); }
+  .a2-h1 { font-size: 1.3rem; } .a2-h2 { font-size: 1.15rem; } .a2-h3 { font-size: 1rem; }
+  .a2-caption { font-size: 0.78rem; color: var(--text-muted); }
+  .a2divider { border: 0; border-top: 1px solid var(--border); margin: 0.5rem 0; }
+  .a2img { max-width: 100%; border-radius: 10px; display: block; }
+
+  /* --------------------------------------------------------------------------
+   * TAB 3: DOCUMENTATION VIEW
+   * -------------------------------------------------------------------------- */
+  #view-docs {
+    padding: 2.5rem 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    gap: 1.5rem;
+  }
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .doc-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: all 0.2s ease;
+  }
+  .doc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+  .doc-card h3 { margin: 0; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+  .doc-card p { margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+  .doc-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .doc-link:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<header>
-  <div class="header-brand">
-    <span>MyHelpDeskAgent</span>
-  </div>
-  <div class="header-actions">
-    <button id="theme-toggle" class="header-btn" onclick="toggleTheme()">🌙 Dark</button>
-    <button id="clear-btn" class="header-btn" onclick="clearChat()">🗑️ Clear</button>
-  </div>
-</header>
 
-<div class="main-wrapper">
-  <div id="log">
-    <!-- Welcome Hero Empty State -->
-    <div id="welcome-hero" class="welcome-hero">
-      <h2>👋 Welcome to MyHelpDeskAgent</h2>
-      <p>I am your automated assistant. I can help troubleshoot hardware, manage support tickets, look up inventory specs, and generate configuration diagrams.</p>
+  <!-- Header Navbar -->
+  <header>
+    <div class="header-brand">
+      <span class="status-dot"></span>
+      <span>MyHelpDeskAgent</span>
+      <span class="brand-badge">ADK 1.1.0</span>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-btn active" id="tab-home" onclick="switchTab('home')">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">home</span> Overview
+      </button>
+      <button class="nav-btn" id="tab-chat" onclick="switchTab('chat')">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">smart_toy</span> Live Agent Chat
+      </button>
+      <button class="nav-btn" id="tab-docs" onclick="switchTab('docs')">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">description</span> Documentation
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="header-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
+      <a class="header-btn" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent" target="_blank">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">code</span> GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- TAB 1: OVERVIEW LANDING HOME PAGE -->
+  <main id="view-home" class="view-panel active">
+    <!-- Hero Banner -->
+    <section class="hero-section">
+      <div class="hero-badge">✨ Google Build with Gemini Track 2 Submission</div>
+      <h1 class="hero-title">Next-Gen Enterprise <span class="gradient-text">AI IT Helpdesk</span></h1>
+      <p class="hero-desc">
+        Built with Google's <strong>Agent Development Kit (ADK v1.1.0)</strong>, Vertex AI Memory Bank, Firestore, and A2UI card surfaces. Automated ticketing, hardware diagnostics, multimodal diagram/video generation, and SLA resolution metrics.
+      </p>
+
+      <div class="badge-row">
+        <span class="tech-pill">🤖 Google ADK 1.1.0</span>
+        <span class="tech-pill">🧠 Vertex AI Memory Bank</span>
+        <span class="tech-pill">📊 Cloud Firestore</span>
+        <span class="tech-pill">🎨 Dynamic A2UI Cards</span>
+        <span class="tech-pill">🚀 Cloud Run Deployed</span>
+      </div>
+
+      <div class="hero-cta-group">
+        <button class="cta-primary" onclick="switchTab('chat')">
+          <span class="material-symbols-outlined">chat</span> Launch Live Assistant
+        </button>
+        <a class="cta-secondary" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent" target="_blank">
+          <span class="material-symbols-outlined">folder_open</span> GitHub Repository
+        </a>
+      </div>
+    </section>
+
+    <!-- Capabilities Matrix Grid -->
+    <section>
+      <h2 class="section-title"><span class="material-symbols-outlined" style="color:var(--accent);">bolt</span> Key Capabilities & Architecture</h2>
       <div class="features-grid">
-        <span class="feature-badge">🎫 Ticket Creation & Tracking</span>
-        <span class="feature-badge">💻 Hardware Inventory</span>
-        <span class="feature-badge">🖼️ Wiring & Setup Guides</span>
-        <span class="feature-badge">📊 SLA Calculations</span>
+        <div class="feature-card">
+          <div class="icon-wrapper memory"><span class="material-symbols-outlined">psychology</span></div>
+          <h3>Cross-Session Memory</h3>
+          <p>Integrated with <strong>Vertex AI Memory Bank Service</strong>. Persists user preferences, laptop assignments, and support notes across sessions automatically.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-wrapper database"><span class="material-symbols-outlined">database</span></div>
+          <h3>Firestore Hardware & Tickets</h3>
+          <p>Queries live hardware inventory (laptop serials, RAM, CPUs) and persists enterprise support tickets with automated ticket IDs (<code>TCK-xxxx</code>).</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-wrapper media"><span class="material-symbols-outlined">movie</span></div>
+          <h3>Multimodal Diagrams & Videos</h3>
+          <p>Generates technical network diagrams using <code>gemini-3.1-flash-lite-image</code> and hardware video walkthroughs using <code>gemini-omni-flash-preview</code>.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-wrapper ui"><span class="material-symbols-outlined">dashboard</span></div>
+          <h3>Native A2UI Card Surfaces</h3>
+          <p>Renders interactive A2UI card surfaces (tables, status badges, and device specs) directly inside the browser using client catalog parsing.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-wrapper diagnostics"><span class="material-symbols-outlined">build</span></div>
+          <h3>Diagnostics & SLA Sandbox</h3>
+          <p>Executes network IP subnet calculations and computes SLA resolution metrics for open support requests inside a Python Code Sandbox.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Architecture Diagram -->
+    <section>
+      <h2 class="section-title"><span class="material-symbols-outlined" style="color:var(--accent);">account_tree</span> End-to-End System Architecture</h2>
+      <div class="arch-card">
+        <div class="arch-diagram">
+          <div class="arch-step">
+            <span class="step-num">1</span>
+            <strong>Web Browser</strong>
+            <span>FastAPI Client UI & A2UI</span>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-step">
+            <span class="step-num">2</span>
+            <strong>FastAPI Proxy</strong>
+            <span>Cloud Run (A2A Protocol)</span>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-step">
+            <span class="step-num">3</span>
+            <strong>ADK Agent Engine</strong>
+            <span>Vertex AI Reasoning Engine</span>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-step">
+            <span class="step-num">4</span>
+            <strong>Google Cloud Services</strong>
+            <span>Firestore / Memory Bank / GCS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Demo Showcase -->
+    <section>
+      <h2 class="section-title"><span class="material-symbols-outlined" style="color:var(--accent);">movie</span> Interactive Agent Demo Showcase</h2>
+      <div class="demo-card">
+        <img src="/demo/demo_walkthrough.gif" alt="MyHelpDeskAgent Demo Walkthrough" class="demo-gif" onerror="this.src='https://raw.githubusercontent.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/main/demo/demo_walkthrough.gif'">
+      </div>
+    </section>
+  </main>
+
+  <!-- TAB 2: LIVE AGENT CHAT -->
+  <main id="view-chat" class="view-panel">
+    <div class="chat-log" id="log">
+      <!-- Welcome Hero inside Chat -->
+      <div class="welcome-hero" id="welcome-hero">
+        <h2>👋 Welcome to MyHelpDeskAgent!</h2>
+        <p>I can help you look up assigned hardware, manage IT support tickets, run network diagnostics, or generate setup diagrams.</p>
+        <div class="sample-prompts">
+          <button class="prompt-chip" onclick="sendPrompt('What hardware is assigned to Puneet Shivaay?')">
+            <span class="material-symbols-outlined" style="font-size:1rem;">laptop</span> Hardware Specs Lookup
+          </button>
+          <button class="prompt-chip" onclick="sendPrompt('Create a high priority IT ticket for my MacBook Pro overheating')">
+            <span class="material-symbols-outlined" style="font-size:1rem;">confirmation_number</span> Create Support Ticket
+          </button>
+          <button class="prompt-chip" onclick="sendPrompt('Generate a technical setup guide diagram for dual monitor connection')">
+            <span class="material-symbols-outlined" style="font-size:1rem;">schema</span> Generate Setup Diagram
+          </button>
+          <button class="prompt-chip" onclick="sendPrompt('Check ticket status for TCK-9941')">
+            <span class="material-symbols-outlined" style="font-size:1rem;">search</span> Check Ticket Status
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="prompts-container">
-    <div class="prompt-chip" onclick="sendPrompt(this.dataset.prompt)" data-prompt="Create a support ticket for my laptop screen">
-      <span>🎫 Create support ticket</span>
-    </div>
-    <div class="prompt-chip" onclick="sendPrompt(this.dataset.prompt)" data-prompt="Check my assigned hardware inventory">
-      <span>💻 Check hardware inventory</span>
-    </div>
-    <div class="prompt-chip" onclick="sendPrompt(this.dataset.prompt)" data-prompt="Generate a setup diagram for dual monitors">
-      <span>🖼️ Generate setup diagram</span>
-    </div>
-  </div>
+    <form class="chat-form" id="form">
+      <textarea class="chat-input" id="input" placeholder="Ask MyHelpDeskAgent (e.g. check hardware specs, create ticket, generate diagram)..." rows="1"></textarea>
+      <button type="submit" class="send-btn" title="Send message">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </form>
+  </main>
 
-  <form id="form">
-    <textarea id="input" rows="1" placeholder="Ask MyHelpDeskAgent… (Shift+Enter for newline)" autofocus></textarea>
-    <button class="submit-btn" type="submit">
-      <span>Send</span>
-      <span class="material-symbols-outlined" style="font-size:1rem;color:#fff;">send</span>
-    </button>
-  </form>
-</div>
+  <!-- TAB 3: DOCUMENTATION -->
+  <main id="view-docs" class="view-panel">
+    <h2 class="section-title"><span class="material-symbols-outlined" style="color:var(--accent);">menu_book</span> Technical Documentation Suite</h2>
+    <div class="docs-grid">
+      <div class="doc-card">
+        <div>
+          <h3>🏗️ Architecture Guide</h3>
+          <p>Comprehensive overview of GCP service integrations, Cloud Run FastAPI proxy, A2A protocol flow, and security boundaries.</p>
+        </div>
+        <a class="doc-link" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/blob/main/doc/architecture.md" target="_blank">View Architecture Doc ➔</a>
+      </div>
+
+      <div class="doc-card">
+        <div>
+          <h3>🎨 Design Patterns</h3>
+          <p>Detailed analysis of the ReAct reasoning loop, Proxy/Gateway pattern, Callback interceptors, and Dual Storage design.</p>
+        </div>
+        <a class="doc-link" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/blob/main/doc/design_patterns.md" target="_blank">View Design Patterns Doc ➔</a>
+      </div>
+
+      <div class="doc-card">
+        <div>
+          <h3>📂 Code Structure & Schemas</h3>
+          <p>Directory tree, ADK tool specifications, and Firestore collection schemas for <code>tickets</code> and <code>hardware</code>.</p>
+        </div>
+        <a class="doc-link" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/blob/main/doc/code_structure.md" target="_blank">View Code Structure Doc ➔</a>
+      </div>
+
+      <div class="doc-card">
+        <div>
+          <h3>🔄 Data Flow Sequences</h3>
+          <p>Sequence diagrams detailing chat message routing, A2UI card rendering, multimodal media generation, and memory extraction.</p>
+        </div>
+        <a class="doc-link" href="https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent/blob/main/doc/data_flow.md" target="_blank">View Data Flow Doc ➔</a>
+      </div>
+    </div>
+  </main>
 
 <script>
 const log = document.getElementById("log");
@@ -447,56 +883,40 @@ const form = document.getElementById("form");
 const input = document.getElementById("input");
 let lastUserPrompt = "";
 
-// Theme Switcher
-function toggleTheme() {
-  const current = document.body.getAttribute("data-theme");
-  const next = current === "dark" ? "light" : "dark";
-  document.body.setAttribute("data-theme", next);
-  document.getElementById("theme-toggle").textContent = next === "dark" ? "☀️ Light" : "🌙 Dark";
-  localStorage.setItem("theme_preference", next);
-}
-
-// Load Theme Preference
-if (localStorage.getItem("theme_preference") === "dark") {
-  toggleTheme();
-}
-
-// Clear Chat
-function clearChat() {
-  log.innerHTML = `
-    <div id="welcome-hero" class="welcome-hero">
-      <h2>👋 Welcome to MyHelpDeskAgent</h2>
-      <p>I am your automated assistant. I can help troubleshoot hardware, manage support tickets, look up inventory specs, and generate configuration diagrams.</p>
-      <div class="features-grid">
-        <span class="feature-badge">🎫 Ticket Creation & Tracking</span>
-        <span class="feature-badge">💻 Hardware Inventory</span>
-        <span class="feature-badge">🖼️ Wiring & Setup Guides</span>
-        <span class="feature-badge">📊 SLA Calculations</span>
-      </div>
-    </div>
-  `;
-}
-
-// Auto-expand textarea
-input.addEventListener("input", () => {
-  input.style.height = "auto";
-  input.style.height = Math.min(input.scrollHeight, 120) + "px";
-});
-
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    form.dispatchEvent(new Event("submit", { cancelable: true }));
+/* Tab Switching */
+function switchTab(tabId) {
+  document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById('view-' + tabId).classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+  
+  if (tabId === 'chat') {
+    input.focus();
+    log.scrollTop = log.scrollHeight;
   }
-});
-
-function sendPrompt(text) {
-  input.value = text;
-  input.dispatchEvent(new Event("input"));
-  form.dispatchEvent(new Event("submit", { cancelable: true }));
 }
 
-function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+/* Dark Mode Toggle */
+function toggleTheme() {
+  const isDark = document.body.getAttribute("data-theme") === "dark";
+  document.body.setAttribute("data-theme", isDark ? "light" : "dark");
+  document.getElementById("theme-btn").textContent = isDark ? "🌙 Dark Mode" : "☀️ Light Mode";
+}
+
+/* Prompt chip trigger */
+function sendPrompt(text) {
+  switchTab('chat');
+  input.value = text;
+  form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+}
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text) e.textContent = text;
+  return e;
+}
 
 function getTimeString() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -527,7 +947,6 @@ function bubble(who) {
 function addQuickActions(msgElem, textContent) {
   const actions = el("div", "msg-actions");
   
-  // Copy button
   const copyBtn = el("button", "action-btn", "📋 Copy");
   copyBtn.onclick = () => {
     navigator.clipboard.writeText(textContent);
@@ -535,15 +954,12 @@ function addQuickActions(msgElem, textContent) {
     setTimeout(() => copyBtn.textContent = "📋 Copy", 1800);
   };
 
-  // Like button
   const likeBtn = el("button", "action-btn", "👍");
   likeBtn.onclick = () => likeBtn.classList.toggle("active");
 
-  // Dislike button
   const dislikeBtn = el("button", "action-btn", "👎");
   dislikeBtn.onclick = () => dislikeBtn.classList.toggle("active");
 
-  // Retry button
   const retryBtn = el("button", "action-btn", "🔄 Retry");
   retryBtn.onclick = () => {
     if (lastUserPrompt) sendPrompt(lastUserPrompt);
@@ -664,7 +1080,6 @@ function renderReply(msgElem, b, parts) {
   }
   if (!b.childNodes.length) b.textContent = "(no response)";
   
-  // Attach quick action bar to agent message
   addQuickActions(msgElem, textStr || flattenText(a2ui) || "(no text)");
   log.scrollTop = log.scrollHeight;
 }

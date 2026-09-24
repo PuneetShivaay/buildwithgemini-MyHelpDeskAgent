@@ -188,8 +188,11 @@ async def chat(req: Request):
     return JSONResponse({"parts": parts})
 
 
-# Serve the chat UI (keep this mount last so /chat wins).
+# Serve demo assets and static UI (keep / mount last so /chat wins).
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+DEMO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "demo"))
+if os.path.exists(DEMO_DIR):
+    app.mount("/demo", StaticFiles(directory=DEMO_DIR), name="demo")
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
 
