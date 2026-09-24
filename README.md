@@ -1,10 +1,26 @@
 # MyHelpDeskAgent
 
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Google ADK 1.1.0](https://img.shields.io/badge/Google%20ADK-1.1.0-4285F4.svg)](https://google.github.io/agent-development-kit/)
+[![Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-Deployed-34A853.svg)](https://frontend-246073422784.us-east1.run.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > 🌐 **Live Deployed Web Application**: [https://frontend-246073422784.us-east1.run.app](https://frontend-246073422784.us-east1.run.app)
 
 **MyHelpDeskAgent** is an AI-powered IT Helpdesk & Support assistant built with Google's **Agent Development Kit (ADK v1.1.0)**. It assists employees with IT support ticketing, hardware inventory lookup, network diagnostics, multimodal setup guide generation (diagrams & videos), and SLA calculation metrics—all presented through rich **A2UI card surfaces** and backed by cross-session **Vertex AI Memory Bank**.
 
 ![MyHelpDeskAgent Interactive Demo Walkthrough](demo/demo_walkthrough.gif)
+
+---
+
+## 📚 Technical Documentation Suite
+
+| Document | Focus & Description |
+| :--- | :--- |
+| 🏗️ **[Architecture Guide](doc/architecture.md)** | System overview, GCP service integrations, A2A protocol flow, and security boundaries. |
+| 🎨 **[Design Patterns](doc/design_patterns.md)** | ReAct loop, Proxy/Gateway, Callback interceptors, Factory/Schema Manager, and Dual Storage patterns. |
+| 📂 **[Code Structure & DB Schemas](doc/code_structure.md)** | Module layout, complete tool reference matrix, and Firestore collection schemas (`tickets`, `hardware`). |
+| 🔄 **[Data Flow Sequences](doc/data_flow.md)** | End-to-end user interaction sequence diagrams, multimodal pipelines, and Memory Bank persistence. |
 
 ---
 
