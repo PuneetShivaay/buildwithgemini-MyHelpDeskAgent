@@ -94,33 +94,82 @@ it-helpdesk-agent/
 
 ---
 
-## 💻 Local Setup & Execution
+## 💻 Step-by-Step Local Setup & Execution
 
-### Prerequisites
-- **Python**: `3.11+`
-- **uv**: Python package manager (`pip install uv`)
-- **Google Cloud SDK**: Signed in with GCP credentials (`gcloud auth application-default login`)
+Follow these step-by-step instructions to run **MyHelpDeskAgent** locally on your workstation.
 
-### 1. Install Dependencies
+### 📋 Prerequisites
+- **Python**: Version `3.11` (or `3.12`)
+- **Google Cloud SDK (`gcloud`)**: Installed and authenticated
+- **Git**: Installed
+
+---
+
+### 1️⃣ Step 1: Clone the Repository
 ```bash
-uv pip install -r pyproject.toml
+git clone https://github.com/PuneetShivaay/buildwithgemini-MyHelpDeskAgent.git
+cd buildwithgemini-MyHelpDeskAgent
 ```
 
-### 2. Run local Agent Backend (ADK Playground)
+---
+
+### 2️⃣ Step 2: Authenticate with Google Cloud
+Ensure Application Default Credentials (ADC) are configured so the agent can access Vertex AI Memory Bank, Firestore, and GCS:
+
 ```bash
-uv run adk api_server --host 127.0.0.1 --port 18080 .
+# Login to Google Cloud CLI
+gcloud auth login
+
+# Configure Application Default Credentials
+gcloud auth application-default login
+
+# Set your active GCP project ID
+gcloud config set project <YOUR_GCP_PROJECT_ID>
 ```
 
-### 3. Run Custom Web UI Proxy
-In a separate terminal, navigate to `frontend/` and start the Uvicorn proxy server:
+---
+
+### 3️⃣ Step 3: Create & Activate Virtual Environment
+```bash
+# Create Python virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Upgrade pip & install project dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+---
+
+### 4️⃣ Step 4: Launch ADK Local Web Playground
+Start the ADK Developer Web server to test tools, Memory Bank, and A2UI card outputs locally:
+
+```bash
+adk web --port 18080 .
+```
+Open **`http://localhost:18080`** in your browser to interact directly with the agent tools in the ADK Developer UI.
+
+---
+
+### 5️⃣ Step 5: Launch Full Web Application & Landing Page
+In a **second terminal window**, activate your virtual environment and start the FastAPI proxy:
+
 ```bash
 cd frontend
-AGENT_ENGINE_RESOURCE_NAME="projects/<PROJECT_NUMBER>/locations/us-east1/reasoningEngines/<ENGINE_ID>" \
-AGENT_DIRECTORY="app" \
-PORT=8080 \
-uv run python main.py
+
+# Set environment variables
+export AGENT_ENGINE_RESOURCE_NAME="projects/<PROJECT_NUMBER>/locations/us-east1/reasoningEngines/<ENGINE_ID>"
+export AGENT_DIRECTORY="app"
+export PORT=8080
+
+# Run Uvicorn server
+python main.py
 ```
-Open your web browser and navigate to port `8080` on your host.
+
+Open **`http://localhost:8080`** in your browser to experience the **Home Overview Landing Page**, **Live Chat Assistant**, and **Documentation Suite**!
 
 ---
 
