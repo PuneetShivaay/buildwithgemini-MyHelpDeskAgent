@@ -2,6 +2,8 @@
 
 **MyHelpDeskAgent** is an AI-powered IT Helpdesk & Support assistant built with Google's **Agent Development Kit (ADK v1.1.0)**. It assists employees with IT support ticketing, hardware inventory lookup, network diagnostics, multimodal setup guide generation (diagrams & videos), and SLA calculation metrics—all presented through rich **A2UI card surfaces** and backed by cross-session **Vertex AI Memory Bank**.
 
+![MyHelpDeskAgent Interactive Demo Walkthrough](demo/demo_walkthrough.gif)
+
 ---
 
 ## 🛠️ Implemented Capabilities & Architecture
